@@ -44,7 +44,7 @@ ConsoleDimensions getConsoleDimensions() {
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
         return {
             csbi.srWindow.Right  - csbi.srWindow.Left + 1,
-            csbi.srWindow.Bottom - csbi.srWindow.Top  + 1
+            csbi.srWindow.Bottom - csbi.srWindow.Top  + 2
         };
     #else
         struct winsize w;
@@ -68,53 +68,62 @@ void MarqueeConsole::run() {
     running = true; 
 
     while (running) {
-        currentDimensions = getConsoleDimensions();
-
-        std::cout << "\033[2J\033[H";
-
-        std::cout << "\033[1;1H";
-
-        for (int i = 0; i < currentDimensions.height / splitFactor; i++) {
-            std::cout << "\033[2K\n";
-        }
-
-        std::cout << "\033[1;1H";
-
-        for (int i = 0; i < currentDimensions.height / splitFactor; i++) {
-            if (row == i) {
-                std::cout << text << std::endl;
-            } else {
-                std::cout << std::endl;
+        while(!_kbhit()){
+            currentDimensions = getConsoleDimensions();
+    
+             std::cout << "\033[H";
+    
+            for (int i = 0; i < (currentDimensions.height + 1) / splitFactor; i++) {
+                std::cout << "\033[2K\n";
             }
-        }
-        
-        if (row == 0) {
-            vDirection = 1;
-        }
-        
-        if (row >= currentDimensions.height / splitFactor) {
-            vDirection = -1;
-        }
+    
+            std::cout << "\033[1;1H";
+    
+            for (int i = 0; i < (currentDimensions.height + 1) / splitFactor; i++) {
+                if (row == i) {
+                    std::cout << text << std::endl;
+                } else {
+                    std::cout << std::endl;
+                }
+            }
+            
+            if (row == 0) {
+                vDirection = 1;
+            }
+            
+            if (row >= currentDimensions.height / splitFactor) {
+                vDirection = -1;
+            }
+    
+            if (text.length() == originalLength) {
+                hDirection = 1;
+            }
+            
+            if (text.length() >= currentDimensions.width) {
+                hDirection = -1;
+            }
+            
+            row += vDirection;
+            
+            if (hDirection == 1) {
+                text = " " + text;
+            } else {
+                text.erase(0, 1);
+            }
 
-        if (text.length() == originalLength) {
-            hDirection = 1;
+            std::cout << "Enter a command: " << std::flush;
+            
+            std::cout << cmd << std::endl << std::flush;
+
+            for (int i = 0; i < consoleHistory.size(); i++) {
+                std::cout << consoleHistory.at(i) << std::endl << std::flush;
+            }
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         
-        if (text.length() >= currentDimensions.width) {
-            hDirection = -1;
-        }
         
-        row += vDirection;
-        
-        if (hDirection == 1) {
-            text = " " + text;
-        } else {
-            text.erase(0, 1);
-        }
-        
-        std::cout << "Enter a command: " << std::flush;
-        
-        if (_kbhit) {
+        if (_kbhit()) {
             ch = _getch();
 
             if (ch == '\r' || ch == '\n') {
@@ -130,14 +139,6 @@ void MarqueeConsole::run() {
                 cmd += ch;
             }
         }
-        
-        std::cout << cmd << std::endl << std::flush;
-
-        for (int i = 0; i < consoleHistory.size(); i++) {
-            std::cout << consoleHistory.at(i) << std::endl << std::flush;
-        }
-        
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
