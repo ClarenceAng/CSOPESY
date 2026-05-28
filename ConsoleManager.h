@@ -9,6 +9,9 @@
 
 #include "Console.h"
 #include "MainConsole.h"
+#include "MarqueeConsole.h"
+
+class Console;
 
 enum ConsoleType {
     MAIN_CONSOLE,
@@ -24,12 +27,19 @@ class ConsoleManager {
         static void destroy();
     
         void run();
+        bool isRunning();
 
     private:
         ConsoleManager();
         ~ConsoleManager() = default;
+        void switchConsole(ConsoleType console);
+        void terminate();
 
+        bool running = false;
         static ConsoleManager* singleton;
         ConsoleTable consoleTable;
         std::shared_ptr<Console> currentConsole;
+
+        friend class MainConsole;
+        friend class MarqueeConsole;
 };

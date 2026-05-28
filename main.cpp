@@ -2,8 +2,17 @@
 
 int main() {
     ConsoleManager::initialize();
+    bool running = true;
 
-    ConsoleManager::getInstance()->run();
+    while (running) {
+        ConsoleManager::getInstance()->run();
+
+        running = ConsoleManager::getInstance()->isRunning();
+    }
+
+    ConsoleManager::destroy();
+
+    std::cout << "Program stopped successfully.\n";
 
     return 0;
 }

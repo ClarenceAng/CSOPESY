@@ -7,10 +7,10 @@ class MainConsole : public Console {
         MainConsole();
         ~MainConsole() = default;
 
-        void display() override;
-        void process() override;
+        void run() override;
     private:
         void executeCommand(std::string cmd) override;
+        void display();
         
         bool running = false;
 };
