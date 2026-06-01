@@ -1,7 +1,12 @@
 #include "MainConsole.h"
 #include "ConsoleManager.h"
+#include <sstream>
+#include <fstream>
 
-MainConsole::MainConsole() {}
+// Comment out the next line to disable the "initialize must run first" gate (for testing).
+#define REQUIRE_INITIALIZE
+
+    MainConsole::MainConsole() {}
 
 void MainConsole::run() {
     std::string cmd;
@@ -41,7 +46,7 @@ void MainConsole::display() {
 
 void MainConsole::executeCommand(std::string cmd) {
     std::unordered_map<std::string, std::function<void()>> command_list = {
-        { "initialize", [](){ std::cout << "initialize command recognized. Doing something.\n"; } },
+        { "initialize", [this](){ MainConsole::initialize(); } },
         { "screen", [](){ std::cout << "screen command recognized. Doing something.\n"; } },
         { "scheduler-start", [](){ std::cout << "scheduler-start command recognized. Doing something.\n"; } },
         { "scheduler-stop", [](){ std::cout << "scheduler-stop command recognized. Doing something.\n"; } },
@@ -51,11 +56,49 @@ void MainConsole::executeCommand(std::string cmd) {
         { "marquee", [this]() { ConsoleManager::getInstance()->switchConsole(MARQUEE_CONSOLE); running = false; }}
     };
 
+#ifdef REQUIRE_INITIALIZE
+    if (!initializeFlag && cmd != "initialize" && cmd != "exit") {
+        std::cout << "Please run 'initialize' first.\n";
+        return;
+    }
+#endif
+
     auto it = command_list.find(cmd);
 
     if (it == command_list.end()) {
         std::cerr << "\'" << cmd << "\' command not found.\n";
     } else {
         command_list[cmd]();
+    }
+}
+
+void MainConsole::initialize() {
+    std::ifstream file("config.txt");
+    std::string line;
+
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open config.txt\n";
+        return;
+    }
+
+    keys.clear();
+    values.clear();
+
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+
+        std::string key, value;
+
+        if (ss >> key >> value) {
+            keys.push_back(key);
+            values.push_back(value);
+        }
+    }
+
+    initializeFlag = true;
+
+    std::cout << "Configuration:\n";
+    for (size_t i = 0; i < keys.size(); i++) {
+        std::cout << keys[i] << " = " << values[i] << '\n';
     }
 }
