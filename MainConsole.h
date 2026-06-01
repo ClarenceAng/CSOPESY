@@ -10,8 +10,7 @@ class MainConsole : public Console {
         void run() override;
     private:
         bool initializeFlag = false;
-        std::vector<std::string> keys;
-        std::vector<std::string> values;
+        std::unordered_map<std::string, std::string> config;
 
         void executeCommand(std::string cmd) override;
         void display();

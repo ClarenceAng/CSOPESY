@@ -81,8 +81,7 @@ void MainConsole::initialize() {
         return;
     }
 
-    keys.clear();
-    values.clear();
+    config.clear();
 
     while (std::getline(file, line)) {
         std::stringstream ss(line);
@@ -90,15 +89,15 @@ void MainConsole::initialize() {
         std::string key, value;
 
         if (ss >> key >> value) {
-            keys.push_back(key);
-            values.push_back(value);
+            config[key] = value;
         }
     }
 
     initializeFlag = true;
 
-    std::cout << "Configuration:\n";
-    for (size_t i = 0; i < keys.size(); i++) {
-        std::cout << keys[i] << " = " << values[i] << '\n';
-    }
+    // only used to test config
+    // std::cout << "Configuration:\n";
+    // for (const auto& [key, value] : config) {
+    //     std::cout << key << " = " << value << '\n';
+    // }
 }
