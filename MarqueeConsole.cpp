@@ -73,12 +73,6 @@ void MarqueeConsole::run() {
             std::cout << "\033[2J\033[H";
     
             for (int i = 0; i < (currentDimensions.height + 1) / splitFactor; i++) {
-                std::cout << "\033[2K\n";
-            }
-    
-            std::cout << "\033[1;1H";
-    
-            for (int i = 0; i < (currentDimensions.height + 1) / splitFactor; i++) {
                 if (row == i) {
                     std::cout << text << std::endl;
                 } else {
