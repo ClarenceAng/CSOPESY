@@ -27,17 +27,21 @@ class ConsoleManager {
         static ConsoleManager* getInstance();
         static void destroy();
     
-        void run();
+        void start();
+        void stop();
         bool isRunning();
-
+        
     private:
         ConsoleManager();
         ~ConsoleManager() = default;
+
+        void run();
         void switchConsole(ConsoleType console);
         void terminate();
 
         bool running = false;
         static ConsoleManager* singleton;
+        std::thread consoleThread;
         ConsoleTable consoleTable;
         std::shared_ptr<Console> currentConsole;
 

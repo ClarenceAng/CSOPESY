@@ -24,6 +24,16 @@ void ConsoleManager::destroy() {
     delete singleton;
 }
 
+void ConsoleManager::start() {
+    consoleThread = std::thread(&ConsoleManager::run, this);
+}
+
+void ConsoleManager::stop() {
+    if (consoleThread.joinable()) {
+        consoleThread.join();
+    }
+}
+
 void ConsoleManager::run() {
     while (running) {
         currentConsole->run();

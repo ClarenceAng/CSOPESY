@@ -17,5 +17,5 @@ inline uint32_t cfg_maxIns;
 inline uint32_t cfg_delaysPerExec;
 
 // globals
-inline uint32_t gl_cpuCycles;
+inline std::atomic<uint32_t> gl_cpuCycles;
 inline uint32_t gl_processCount;

@@ -2,12 +2,11 @@
 
 int main() {
     ConsoleManager::initialize();
-    bool running = true;
     gl_cpuCycles = 0;
+    gl_processCount = 0;
+    bool running = true;
 
-    std::thread consoleThread([]() {
-        ConsoleManager::getInstance()->run();
-    });
+    ConsoleManager::getInstance()->start();
 
     while (running) {
         running = ConsoleManager::getInstance()->isRunning();
@@ -16,7 +15,7 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    consoleThread.join();
+    ConsoleManager::getInstance()->stop();
     ConsoleManager::destroy();
 
     std::cout << "CPU Cycles elapsed: " << gl_cpuCycles << std::endl;
