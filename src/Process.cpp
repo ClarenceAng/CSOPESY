@@ -53,35 +53,32 @@ uint32_t Process::getLineNumber() {
 }
 
 void Process::generateInstructions() {
-    // temporary, replace with actual implementation later
-    symbolTable->emplace("var1", 0);
-    symbolTable->emplace("var2", 0);
-    symbolTable->emplace("var3", 0);
-    symbolTable->emplace("var4", 0);
-    symbolTable->emplace("var5", 0);
-    symbolTable->emplace("var6", 0);
+    // TODO: Replace with randomization
+    std::string msg = "Hello world from " + name + "!";
     
-    instructions->push(std::make_unique<IPrint>("Hello world from " + name + "!", *symbolTable, *logger));
-    instructions->push(std::make_unique<IDeclare>(symbolTable->at("var1"), 5));
-    instructions->push(std::make_unique<IDeclare>(symbolTable->at("var2"), 10));
-    instructions->push(std::make_unique<IDeclare>(symbolTable->at("var3"), 2));
-    instructions->push(std::make_unique<IAdd>(symbolTable->at("var4"), symbolTable->at("var1"), symbolTable->at("var2")));
-    instructions->push(std::make_unique<ISubtract>(symbolTable->at("var5"), symbolTable->at("var2"), symbolTable->at("var3")));
-    instructions->push(std::make_unique<IPrint>("var4", *symbolTable, *logger));
-    instructions->push(std::make_unique<IPrint>("var5", *symbolTable, *logger));
-    instructions->push(std::make_unique<ISleep>(10));
+    // Example format
+    instructions->push(cmdPrint(msg));
+    instructions->push(cmdDeclare("var1", 5));
+    instructions->push(cmdDeclare("var2", 10));
+    instructions->push(cmdDeclare("var3", 2));
+    instructions->push(cmdAdd("var4", "var1", "var2"));
+    instructions->push(cmdSubtract("var5", "var2", "var3"));
+    instructions->push(cmdPrint("var4"));
+    instructions->push(cmdPrint("var5"));
+    instructions->push(cmdSleep(10));
 
-    std::unique_ptr<ForLoop> forLoop1 = std::make_unique<ForLoop>();
-    std::unique_ptr<ForLoop> forLoop2 = std::make_unique<ForLoop>();
+    // For loop instructions have to be delcared first then have instructions added
+    auto forLoop1 = makeForLoop();
+    auto forLoop2 = makeForLoop();
 
-    forLoop1->push_back(std::make_unique<IAdd>(symbolTable->at("var6"), symbolTable->at("var6"), symbolTable->at("var1")));
-    forLoop1->push_back(std::make_unique<IPrint>("var6", *symbolTable, *logger));
-    forLoop2->push_back(std::make_unique<IFor>(std::move(forLoop1), 2));
+    forLoop1->push_back(cmdAdd("var6", "var6", "var1"));
+    forLoop1->push_back(cmdPrint("var6"));
+    // For loop contains nested for loop
+    forLoop2->push_back(cmdFor(std::move(forLoop1), 2));
     
-    instructions->push(std::make_unique<IFor>(std::move(forLoop2), 3));
-}
+    instructions->push(cmdFor(std::move(forLoop2), 3));
 
-/*
+    /*
     PRINT(msg)
     DECLARE(var1, 5)
     DECLARE(var2, 10)
@@ -92,4 +89,48 @@ void Process::generateInstructions() {
     PRINT(var5)
     SLEEP(10)
     FOR([FOR([ADD(var6, var6, var1)], 2), PRINT(var6)]3)
-*/
+    */
+}
+
+void Process::makeVariable(std::string var) {
+    if (symbolTable->contains(var)) {
+        return;
+    }
+
+    symbolTable->emplace(var, 0);
+}
+
+std::unique_ptr<Instruction> Process::cmdPrint(std::string msg) {
+    return std::make_unique<IPrint>(msg, *symbolTable, *logger);
+}
+
+std::unique_ptr<Instruction> Process::cmdDeclare(std::string var, uint16_t val) {
+    makeVariable(var);
+    return std::make_unique<IDeclare>(symbolTable->at(var), val);
+}
+
+std::unique_ptr<Instruction> Process::cmdAdd(std::string var1, std::string var2, std::string var3) {
+    makeVariable(var1);
+    makeVariable(var2);
+    makeVariable(var3);
+    return std::make_unique<IAdd>(symbolTable->at(var1), symbolTable->at(var2), symbolTable->at(var3));
+}
+
+std::unique_ptr<Instruction> Process::cmdSubtract(std::string var1, std::string var2, std::string var3) {
+    makeVariable(var1);
+    makeVariable(var2);
+    makeVariable(var3);
+    return std::make_unique<ISubtract>(symbolTable->at(var1), symbolTable->at(var2), symbolTable->at(var3));
+}
+
+std::unique_ptr<Instruction> Process::cmdSleep(uint8_t ticks) {
+    return std::make_unique<ISleep>(ticks);
+}
+
+std::unique_ptr<Instruction> Process::cmdFor(std::unique_ptr<ForLoop> instructions, uint16_t repeats) {
+    return std::make_unique<IFor>(std::move(instructions), repeats);
+}
+
+std::unique_ptr<ForLoop> Process::makeForLoop() {
+    return std::make_unique<ForLoop>();
+}

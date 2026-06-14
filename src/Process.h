@@ -21,6 +21,15 @@ class Process {
 
     private:
         void generateInstructions();
+        
+        void makeVariable(std::string var);
+        std::unique_ptr<Instruction> cmdPrint(std::string msg);
+        std::unique_ptr<Instruction> cmdDeclare(std::string var, uint16_t val);
+        std::unique_ptr<Instruction> cmdAdd(std::string var1, std::string var2, std::string var3);
+        std::unique_ptr<Instruction> cmdSubtract(std::string var1, std::string var2, std::string var3);
+        std::unique_ptr<Instruction> cmdSleep(uint8_t ticks);
+        std::unique_ptr<Instruction> cmdFor(std::unique_ptr<ForLoop> instructions, uint16_t repeats);
+        std::unique_ptr<ForLoop> makeForLoop();
 
         uint32_t processId;
         std::string name;

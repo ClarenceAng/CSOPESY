@@ -9,10 +9,12 @@ IFor::IFor(std::unique_ptr<ForLoop> instructions, uint16_t repeats)
 void IFor::execute() {
     isRunning = true;
 
-    (*instructions)[forIndex]->execute();
+    if (instructionSize > 0) {
+        (*instructions)[forIndex]->execute();
 
-    if (!(*instructions)[forIndex]->isLooping()) {
-        forIndex++;
+        if (!(*instructions)[forIndex]->isLooping()) {
+            forIndex++;
+        }
     }
 
     if (forIndex == instructionSize) {
