@@ -6,7 +6,7 @@
 
 bool initialize() {
     // Look for config.txt relative to wherever the program is launched from.
-    const std::vector<std::string> configPaths = { "src/config.txt" };
+    const std::vector<std::string> configPaths = { "config.txt" };
 
     std::ifstream file;
     for (const auto& path : configPaths) {
@@ -41,6 +41,8 @@ bool initialize() {
     // Instantiate the rest of the program now that config is loaded.
     ConsoleManager::initialize();
     Scheduler::initialize();
+
+    std::cout << "Program initialized successfully." << std::endl;
 
     return true;
 }

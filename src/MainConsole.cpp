@@ -87,9 +87,6 @@ MainConsole::MainConsole() {
 
 void MainConsole::run() {
     std::string cmd;
-    
-    std::cout << "\033[2J\033[H";
-    headerDisplay();
 
     while(running) {
         std::cout << "Enter a command: ";
