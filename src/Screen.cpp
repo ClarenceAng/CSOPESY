@@ -34,7 +34,9 @@ void Screen::executeCommand(const std::string& cmd) {
         std::cout << "Process is still being generated." << std::endl;
     } else {
         if (cmd == "process-smi") {
-            display();
+            std::cout << "Process name: " << process->getProcessName() << std::endl;
+            std::cout << "ID: " << process->getProcessId() << std::endl;
+            std::cout << std::endl;
             process->displayLog();
             std::cout << std::endl;
 
@@ -51,10 +53,3 @@ void Screen::executeCommand(const std::string& cmd) {
         }
     }
 }
-
-void Screen::display() {
-    std::cout << "Process name: " << process->getProcessName() << std::endl;
-    std::cout << "ID: " << process->getProcessId() << std::endl;
-    std::cout << std::endl;
-}
-

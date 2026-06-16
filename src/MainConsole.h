@@ -19,7 +19,6 @@ class MainConsole : public Console {
 
     private:
         void executeCommand(const std::string& cmd) override;
-        void display();
 
         bool running = false;
         CommandMap commands;

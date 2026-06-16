@@ -15,7 +15,6 @@ class Screen : public Console {
 
     private:
         void executeCommand(const std::string& cmd) override;
-        void display();
 
         std::string name;
         bool running = false;
