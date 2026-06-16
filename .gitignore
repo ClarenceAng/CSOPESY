@@ -1,6 +1,7 @@
 .vscode
 .claude
 build
+app.exe
 
 src/app
 src/app.exe
