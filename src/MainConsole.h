@@ -18,12 +18,9 @@ class MainConsole : public Console {
         void setRunning(bool running) override;
 
     private:
-        bool initializeFlag = false;
-
         void executeCommand(const std::string& cmd) override;
         void display();
-        void initialize();
-        
+
         bool running = false;
         CommandMap commands;
 };

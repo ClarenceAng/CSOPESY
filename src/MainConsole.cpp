@@ -3,16 +3,7 @@
 
 MainConsole::MainConsole() {
     commands = {
-        { "initialize", [this](const auto& args) { 
-            if (!args.empty()) {
-                std::cerr << "Error: initialize takes no arguments." << std::endl;
-                return;
-            }
-
-            MainConsole::initialize(); 
-        }},
-
-        { "screen", [this](const auto& args) { 
+        { "screen", [this](const auto& args) {
             if (args.empty()) {
                 std::cerr << "Error: Please provide arguments for screen." << std::endl;
                 return;
@@ -127,17 +118,12 @@ void MainConsole::display() {
               << "Go, Kenneth D.                                " << std::endl
               << "Trocino, Job D.                               " << std::endl
               << "                                              " << std::endl
-              << "Last updated: 06-14-2026                      " << std::endl
+              << "Last updated: 06-16-2026                      " << std::endl
               << "----------------------------------------------" << std::endl              
               ;
 }
 
 void MainConsole::executeCommand(const std::string& cmd) {
-    if (!initializeFlag && cmd != "initialize" && cmd != "exit") {
-        std::cerr << "Error: Please run 'initialize' first.\n";
-        return;
-    }
-
     std::istringstream iss(cmd);
     std::vector<std::string> tokens;
     std::string word;
@@ -158,35 +144,4 @@ void MainConsole::executeCommand(const std::string& cmd) {
     } else {
         std::cerr << "Error: Command \'" << cmdToken << "\' not recognized." << std::endl;
     }
-}
-
-void MainConsole::initialize() {
-    std::ifstream file("config.txt");
-    std::string line;
-
-    if (!file.is_open()) {
-        std::cerr << "Error: Could not open config.txt\n";
-        return;
-    }
-
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-
-        std::string key, value;
-
-        if (ss >> key >> value) {
-            if (key == "num-cpu") config.numCpu = std::stoi(value);
-            if (key == "scheduler") {
-                if (value == "\"fcfs\"") config.schedulerType = FCFS;
-                if (value == "\"rr\"") config.schedulerType = RR;
-            }
-            if (key == "quantum-cycles") config.quantumCycles = std::stoi(value);
-            if (key == "batch-process-freq") config.batchProcessFreq = std::stoi(value);
-            if (key == "min-ins") config.minIns = std::stoi(value);
-            if (key == "max-ins") config.maxIns = std::stoi(value);
-            if (key == "delays-per-exec") config.delaysPerExec = std::stoi(value);
-        }
-    }
-
-    initializeFlag = true;
 }

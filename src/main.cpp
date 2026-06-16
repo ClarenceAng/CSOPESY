@@ -1,10 +1,17 @@
 #include "globals.h"
+#include "Bootstrap.h"
 #include "ConsoleManager.h"
 #include "Scheduler.h"
 
 int main() {
-    ConsoleManager::initialize();
-    Scheduler::initialize();
+    Bootstrap bootstrap;
+    bootstrap.run();
+
+    if (!bootstrap.isInitialized()) {
+        std::cout << "Program stopped successfully.\n";
+        return 0;
+    }
+
     bool running = true;
 
     ConsoleManager::getInstance()->start();
