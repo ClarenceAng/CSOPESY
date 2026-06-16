@@ -1,6 +1,6 @@
 #include "Process.h"
 
-Process::Process(uint32_t processId, std::string name, uint8_t coreNumber) {
+Process::Process(uint64_t processId, std::string name, uint8_t coreNumber) {
     this->processId = processId;
     this->name = name;
     this->coreNumber = coreNumber;
@@ -36,7 +36,7 @@ bool Process::isFinished() {
     return instructions->empty();
 }
 
-uint32_t Process::getProcessId() {
+uint64_t Process::getProcessId() {
     return processId;
 }
 
@@ -44,11 +44,11 @@ std::string Process::getProcessName() {
     return name;
 }
 
-uint32_t Process::getInstructionSize() {
+uint64_t Process::getInstructionSize() {
     return instructions->size();
 }
 
-uint32_t Process::getLineNumber() {
+uint64_t Process::getLineNumber() {
     return lineNumber;
 }
 

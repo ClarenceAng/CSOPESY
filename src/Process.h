@@ -7,17 +7,17 @@ using InstructionQueue = std::queue<std::unique_ptr<Instruction>>;
 
 class Process {
     public:
-        Process(uint32_t processId, std::string name, uint8_t coreNumber);
+        Process(uint64_t processId, std::string name, uint8_t coreNumber);
         ~Process() = default;
 
         void executeInstruction();
         void displayLog();
         bool isFinished();
 
-        uint32_t getProcessId();
+        uint64_t getProcessId();
         std::string getProcessName();
-        uint32_t getInstructionSize();
-        uint32_t getLineNumber();
+        uint64_t getInstructionSize();
+        uint64_t getLineNumber();
 
     private:
         void generateInstructions();
@@ -31,11 +31,11 @@ class Process {
         std::unique_ptr<Instruction> cmdFor(std::unique_ptr<ForLoop> instructions, uint16_t repeats);
         std::unique_ptr<ForLoop> makeForLoop();
 
-        uint32_t processId;
+        uint64_t processId;
         std::string name;
         uint8_t coreNumber;
 
-        std::atomic<uint32_t> lineNumber = 1;
+        std::atomic<uint64_t> lineNumber = 1;
         uint8_t sleepCounter;
         bool isLooping = 0;
 

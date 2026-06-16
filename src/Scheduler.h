@@ -19,14 +19,14 @@ class Scheduler {
         Scheduler();
         ~Scheduler() = default;
         
-        void generateProcess(uint32_t processId, std::string processName, uint8_t coreNumber);
+        void generateProcess(uint64_t processId, std::string processName, uint8_t coreNumber);
         void runScheduler(uint8_t coreNumber);
 
         bool isReadyQueueEmpty(uint8_t coreNumber);
         Process& getProcess(uint8_t coreNumber);
         void dequeueProcess(uint8_t coreNumber);
 
-        uint32_t processCounter = 1;
+        uint64_t processCounter = 1;
         uint8_t coreCounter = 0;
 
         static Scheduler* singleton;

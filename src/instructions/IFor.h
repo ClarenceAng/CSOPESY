@@ -16,7 +16,7 @@ class IFor : public Instruction {
         uint16_t repeats;
         uint16_t repeatCount = 0;
 
-        uint32_t instructionSize;
-        uint32_t forIndex = 0;
+        uint64_t instructionSize;
+        uint64_t forIndex = 0;
         bool isRunning = true;;
 };

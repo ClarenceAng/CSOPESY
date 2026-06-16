@@ -47,7 +47,7 @@ void Scheduler::generateSingleProcess(std::string processName) {
     }
 }
 
-void Scheduler::generateProcess(uint32_t processId, std::string processName, uint8_t coreNumber) { 
+void Scheduler::generateProcess(uint64_t processId, std::string processName, uint8_t coreNumber) { 
     std::shared_ptr<Process> process = std::make_shared<Process>(processId, processName, coreNumber);
 
     ConsoleManager::getInstance()->consoleTable[processName]->setProcess(process);

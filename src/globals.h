@@ -31,11 +31,11 @@ using Logger = std::vector<std::tuple<std::string, std::string>>;
 struct Config {
     uint8_t numCpu;
     SchedulerType schedulerType;
-    uint32_t quantumCycles;
-    uint32_t batchProcessFreq;
-    uint32_t minIns;
-    uint32_t maxIns;
-    uint32_t delaysPerExec;
+    uint64_t quantumCycles;
+    uint64_t batchProcessFreq;
+    uint64_t minIns;
+    uint64_t maxIns;
+    uint64_t delaysPerExec;
 };
 
 inline Config config;
