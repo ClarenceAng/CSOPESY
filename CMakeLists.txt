@@ -6,7 +6,6 @@ add_executable(
     app
 
     src/main.cpp
-    src/Bootstrap.cpp
     src/ConsoleManager.cpp
     src/MainConsole.cpp
     src/Process.cpp

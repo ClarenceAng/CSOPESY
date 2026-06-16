@@ -1,5 +1,6 @@
 #include "MainConsole.h"
 #include "ConsoleManager.h"
+#include "globals.h"
 
 MainConsole::MainConsole() {
     commands = {
@@ -68,7 +69,7 @@ MainConsole::MainConsole() {
                 return;
             }
             
-            std::cout << "\033[2J\033[H"; display(); 
+            std::cout << "\033[2J\033[H"; headerDisplay(); 
         }},
 
         { "exit", [this](const auto& args) {
@@ -88,7 +89,7 @@ void MainConsole::run() {
     std::string cmd;
     
     std::cout << "\033[2J\033[H";
-    display();
+    headerDisplay();
 
     while(running) {
         std::cout << "Enter a command: ";
@@ -99,28 +100,6 @@ void MainConsole::run() {
 
 void MainConsole::setRunning(bool running) {
     this->running = running;
-}
-
-void MainConsole::display() {
-    // ASCII Art Generator: https://patorjk.com/software/taag/
-    std::cout << R"( _____  _____  ___________ _____ _______   __)" << std::endl
-              << R"(/  __ \/  ___||  _  | ___ \  ___/  ___\ \ / /)" << std::endl
-              << R"(| /  \/\ `--. | | | | |_/ / |__ \ `--. \ V /)" << std::endl
-              << R"(| |     `--. \| | | |  __/|  __| `--. \ \ /)" << std::endl
-              << R"(| \__/\/\__/ /\ \_/ / |   | |___/\__/ / | |)" << std::endl
-              << R"( \____/\____/  \___/\_|   \____/\____/  \_/)" << std::endl
-              << "----------------------------------------------" << std::endl
-              << "Welcome to CSOPESY Emulator!                  " << std::endl
-              << "                                              " << std::endl
-              << "Developers:                                   " << std::endl
-              << "Adiong, Nathaniel Irvin L.                    " << std::endl
-              << "Ang, Clarence Ivan C.                         " << std::endl
-              << "Go, Kenneth D.                                " << std::endl
-              << "Trocino, Job D.                               " << std::endl
-              << "                                              " << std::endl
-              << "Last updated: 06-16-2026                      " << std::endl
-              << "----------------------------------------------" << std::endl              
-              ;
 }
 
 void MainConsole::executeCommand(const std::string& cmd) {
