@@ -2,8 +2,17 @@
 
 Scheduler::Scheduler() {
     // temporary, replace with actual implementation later
-    cpuThreads.emplace_back(&Scheduler::runScheduler, this, 0);
-    cpuReadyQueues.resize(1);
+    if (config.schedulerType == FCFS) {
+        for (int i = 0; i < config.numCpu; i++) {
+            cpuThreads.emplace_back(&Scheduler::runFCFSScheduler, this, i);
+        }
+    } else if (config.schedulerType == RR) {
+        for (int i = 0; i < config.numCpu; i++) {
+            cpuThreads.emplace_back(&Scheduler::runRRScheduler, this, i);
+        }
+    }
+
+    cpuReadyQueues.resize(config.numCpu);
     running = true;
 }
 
@@ -58,15 +67,24 @@ void Scheduler::generateProcess(uint64_t processId, std::string processName, uin
     cpuReadyQueues[coreNumber].push(process);
 }
 
-void Scheduler::runScheduler(uint8_t coreNumber) {
+void Scheduler::runFCFSScheduler(uint8_t coreNumber) {
+    uint64_t ticks;
+
     while(running) {
         if (!isReadyQueueEmpty(coreNumber)) {
             // gets process pointer
             Process& process = getProcess(coreNumber);
 
+            ticks = 0;
+
             // loops until finished (fcfs)
             while (!process.isFinished() && running) {
-                process.executeInstruction();
+                if (ticks == config.delaysPerExec) {
+                    process.executeInstruction();
+                    ticks = 0;
+                } else {
+                    ticks++;
+                }
             }
 
             // dequeues after done

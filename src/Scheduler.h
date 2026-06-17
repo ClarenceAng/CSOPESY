@@ -20,7 +20,8 @@ class Scheduler {
         ~Scheduler() = default;
         
         void generateProcess(uint64_t processId, std::string processName, uint8_t coreNumber);
-        void runScheduler(uint8_t coreNumber);
+        void runFCFSScheduler(uint8_t coreNumber);
+        void runRRScheduler(uint8_t coreNumber);
 
         bool isReadyQueueEmpty(uint8_t coreNumber);
         Process& getProcess(uint8_t coreNumber);
