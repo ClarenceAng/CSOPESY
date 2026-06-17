@@ -45,11 +45,19 @@ std::string Process::getProcessName() {
 }
 
 uint64_t Process::getInstructionSize() {
-    return instructions->size();
+    return instructionSize;
 }
 
 uint64_t Process::getLineNumber() {
     return lineNumber;
+}
+
+void Process::setStartingTimestamp() {
+    startingTimestamp = getTimestamp();
+}
+
+std::string Process::getStartingTimestamp() {
+    return startingTimestamp;
 }
 
 void Process::generateInstructions() {
@@ -77,6 +85,8 @@ void Process::generateInstructions() {
     forLoop2->push_back(cmdFor(std::move(forLoop1), 2));
     
     instructions->push(cmdFor(std::move(forLoop2), 3));
+
+    instructionSize = instructions->size();
 
     /*
     PRINT(msg)

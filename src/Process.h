@@ -19,6 +19,9 @@ class Process {
         uint64_t getInstructionSize();
         uint64_t getLineNumber();
 
+        void setStartingTimestamp();
+        std::string getStartingTimestamp();
+
     private:
         void generateInstructions();
         
@@ -34,6 +37,8 @@ class Process {
         uint64_t processId;
         std::string name;
         uint8_t coreNumber;
+        uint64_t instructionSize;
+        std::string startingTimestamp;
 
         std::atomic<uint64_t> lineNumber = 1;
         uint8_t sleepCounter;

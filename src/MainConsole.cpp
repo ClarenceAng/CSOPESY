@@ -32,7 +32,7 @@ MainConsole::MainConsole() {
                     return;
                 }
 
-                // add behavior here
+                Scheduler::getInstance()->getCpuUtilization(false);
             }
         }},
 
@@ -42,7 +42,7 @@ MainConsole::MainConsole() {
                 return;
             }
 
-            std::cout << "scheduler-start command recognized. Doing something.\n"; 
+            std::thread(&Scheduler::generateMultipleProcesses, Scheduler::getInstance()).detach();
         }},
 
         { "scheduler-stop", [this](const auto& args) { 
@@ -51,7 +51,7 @@ MainConsole::MainConsole() {
                 return;
             }
             
-            std::cout << "scheduler-stop command recognized. Doing something.\n"; 
+            Scheduler::getInstance()->stopGenerator();
         }},
 
         { "report-util", [this](const auto& args) { 
@@ -60,7 +60,7 @@ MainConsole::MainConsole() {
                 return;
             }
             
-            std::cout << "report-util command recognized. Doing something.\n";
+            Scheduler::getInstance()->getCpuUtilization(true);
         }},
 
         { "clear", [this](const auto& args) { 

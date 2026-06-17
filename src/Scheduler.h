@@ -14,6 +14,7 @@ class Scheduler {
         void generateSingleProcess(std::string processName);
         void generateMultipleProcesses();
         void stopGenerator();
+        void getCpuUtilization(bool isFileOutput);
         
     private:
         Scheduler();
@@ -23,9 +24,11 @@ class Scheduler {
         void runFCFSScheduler(uint8_t coreNumber);
         void runRRScheduler(uint8_t coreNumber);
 
+        std::tuple<uint8_t, uint64_t> getProcessValues();
         bool isReadyQueueEmpty(uint8_t coreNumber);
-        Process& getProcess(uint8_t coreNumber);
+        std::shared_ptr<Process> getProcess(uint8_t coreNumber);
         void dequeueProcess(uint8_t coreNumber);
+        void setCpuUsage(uint8_t coreNumber, bool isUsing);
 
         uint64_t processCounter = 1;
         uint8_t coreCounter = 0;
@@ -33,10 +36,12 @@ class Scheduler {
         static Scheduler* singleton;
         std::atomic<bool> running = false;
         std::atomic<bool> generatorRunning = false;
-        std::vector<std::shared_ptr<Process>> processList; // for viewing screen -ls
+        std::vector<bool> cpuUsage;
         std::vector<std::queue<std::shared_ptr<Process>>> cpuReadyQueues;
         std::vector<std::thread> cpuThreads;
+        std::vector<std::shared_ptr<Process>> finishedProcesses;
 
         std::mutex counter_mutex;
         std::shared_mutex process_mutex;
+        std::shared_mutex usage_mutex;
 };

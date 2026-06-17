@@ -1,5 +1,3 @@
-#include <fstream>
-
 #include "globals.h"
 #include "ConsoleManager.h"
 #include "Scheduler.h"

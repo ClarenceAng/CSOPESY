@@ -9,6 +9,7 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
 
 #include <unordered_map>
 #include <queue>
@@ -60,4 +61,23 @@ inline void headerDisplay() {
               << "Last updated: 06-16-2026                      " << std::endl
               << "----------------------------------------------" << std::endl
               ;
+}
+
+inline std::string getTimestamp() {
+    auto now = std::chrono::system_clock::now();
+
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+
+    std::tm tm{};
+
+    #ifdef _WIN32
+        localtime_s(&tm, &t);
+    #else
+        localtime_r(&t, &tm);
+    #endif
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%m/%d/%Y %I:%M:%S%p");
+
+    return oss.str();
 }
