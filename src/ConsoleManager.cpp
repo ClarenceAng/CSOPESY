@@ -45,6 +45,7 @@ bool ConsoleManager::isRunning() {
 }
 
 bool ConsoleManager::registerScreen(std::string consoleName, bool isSwitch) {
+    std::lock_guard<std::mutex> lock(screen_mutex);
     if (consoleTable.contains(consoleName)) {
         std::cerr << "Error: Screen " << consoleName << " already exists." << std::endl;
         return false;
@@ -60,6 +61,7 @@ bool ConsoleManager::registerScreen(std::string consoleName, bool isSwitch) {
 }
 
 void ConsoleManager::switchConsole(std::string consoleName) {
+    std::lock_guard<std::mutex> lock(screen_mutex);
     if (!consoleTable.contains(consoleName)) {
         std::cerr << "Error: Screen " << consoleName << " not registered." << std::endl;
         return;
@@ -67,7 +69,18 @@ void ConsoleManager::switchConsole(std::string consoleName) {
 
     currentConsole->setRunning(false);
     currentConsole = consoleTable[consoleName];
+
+    if (consoleName == MAIN_CONSOLE) {
+        std::cout << "\033[2J\033[H"; 
+        headerDisplay(); 
+    }
+
     currentConsole->setRunning(true);
+}
+
+void ConsoleManager::setScreenProcess(std::shared_ptr<Process> process) {
+    std::lock_guard<std::mutex> lock(screen_mutex);
+    consoleTable[process->getProcessName()]->setProcess(process);
 }
 
 void ConsoleManager::terminate() {

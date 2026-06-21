@@ -35,6 +35,7 @@ void Scheduler::destroy() {
 }
 
 void Scheduler::stop() {
+    generatorRunning = false;
     running = false;
 
     for (auto& t : cpuThreads) {
@@ -69,19 +70,19 @@ void Scheduler::generateMultipleProcesses() {
         }
 
         std::thread(&Scheduler::generateProcess, this, processNumber, processName, coreNumber).detach();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // uncomment this line for the scheduler to be more reasonable
+        // std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
 void Scheduler::stopGenerator() {
     generatorRunning = false;
-    // std::cout << generatorRunning << std::endl;
 }
 
 void Scheduler::generateProcess(uint64_t processId, std::string processName, uint8_t coreNumber) { 
     std::shared_ptr<Process> process = std::make_shared<Process>(processId, processName, coreNumber);
 
-    ConsoleManager::getInstance()->consoleTable[processName]->setProcess(process);
+    ConsoleManager::getInstance()->setScreenProcess(process);
 
     std::unique_lock lock(process_mutex);
     cpuReadyQueues[coreNumber].push(process);
@@ -112,7 +113,6 @@ void Scheduler::runFCFSScheduler(uint8_t coreNumber) {
             setCpuUsage(coreNumber, false);
         }
         // wait for processes if there is none
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 

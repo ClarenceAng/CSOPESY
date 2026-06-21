@@ -4,6 +4,7 @@
 #include "Console.h"
 #include "MainConsole.h"
 #include "Screen.h"
+#include "Process.h"
 
 class Console;
 
@@ -21,14 +22,16 @@ class ConsoleManager {
         void stop();
         bool isRunning();
         
+        bool registerScreen(std::string consoleName, bool isSwitch);
+        void switchConsole(std::string consoleName);
+        void setScreenProcess(std::shared_ptr<Process> process);
+        void terminate();
+
     private:
         ConsoleManager();
         ~ConsoleManager() = default;
 
         void run();
-        bool registerScreen(std::string consoleName, bool isSwitch);
-        void switchConsole(std::string consoleName);
-        void terminate();
 
         bool running = false;
         static ConsoleManager* singleton;
@@ -36,7 +39,5 @@ class ConsoleManager {
         ConsoleTable consoleTable;
         std::shared_ptr<Console> currentConsole;
 
-        friend class MainConsole;
-        friend class Screen;
-        friend class Scheduler;
+        std::mutex screen_mutex;
 };
