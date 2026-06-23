@@ -262,15 +262,15 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
             report << std::endl << "----------------------------------------------" << std::endl;
             report << "Running Processes:" << std::endl;
             for (int i = 0; i < config.numCpu; i++) {
-                if (isReadyQueueEmpty(i)) continue;
-                std::shared_ptr<Process> process = getProcess(i);
+                if (cpuReadyQueues[i].empty()) continue;
+                const auto& process = cpuReadyQueues[i].front();
                 report << process->getProcessName() 
                         << "\t"
                         << "(" << process->getProcessTimestamp() << ")"
                         << "   "
-                        << "Core: " << i 
+                        << "Core: " << i
                         << "   "
-                        << process->getLineNumber() - 1 << " / " << process->getInstructionSize() 
+                        << process->getLineNumber() << " / " << process->getInstructionSize() 
                         << std::endl;
             }
             report << std::endl << "Finished Processes:" << std::endl;
@@ -281,7 +281,7 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
                         << "   " 
                         << "Finished"
                         << "   " 
-                        << process->getLineNumber() - 1 << " / " << process->getInstructionSize() 
+                        << process->getLineNumber() << " / " << process->getInstructionSize() 
                         << std::endl;
             }
             report << "----------------------------------------------" << std::endl << std::endl;
