@@ -31,3 +31,10 @@ void IFor::execute() {
 bool IFor::isLooping() {
     return isRunning;
 }
+
+uint64_t IFor::getExecutionCount() const {
+    uint64_t bodyCount = 0;
+    for (const auto& instr : *instructions)
+        bodyCount += instr->getExecutionCount();
+    return bodyCount * repeats;
+}

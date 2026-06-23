@@ -10,6 +10,7 @@ class IFor : public Instruction {
 
         void execute() override;
         bool isLooping() override;
+        uint64_t getExecutionCount() const override;
 
     private:
         std::unique_ptr<ForLoop> instructions;

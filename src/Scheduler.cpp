@@ -133,7 +133,7 @@ void Scheduler::runRRScheduler(uint8_t coreNumber) {
             ticks = 0;
 
             // for loop for quantum cycles
-            for (int i = 0; i < config.quantumCycles && running; i++) {
+            for (uint64_t i = 0; i < config.quantumCycles && running; i++) {
                 // delay before executing
                 while (ticks != config.delaysPerExec && running) {
                     ticks++;
@@ -222,15 +222,15 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
         std::cout << std::endl << "----------------------------------------------" << std::endl;
         std::cout << "Running Processes:" << std::endl;
         for (int i = 0; i < config.numCpu; i++) {
-            if (isReadyQueueEmpty(i)) continue;
-            std::shared_ptr<Process> process = getProcess(i);
-            std::cout << process->getProcessName() 
+            if (cpuReadyQueues[i].empty()) continue;
+            const auto& process = cpuReadyQueues[i].front();
+            std::cout << process->getProcessName()
                       << "\t"
                       << "(" << process->getProcessTimestamp() << ")"
                       << "   "
-                      << "Core: " << i 
+                      << "Core: " << i
                       << "   "
-                      << process->getLineNumber() - 1 << " / " << process->getInstructionSize() 
+                      << process->getLineNumber() << " / " << process->getInstructionSize()
                       << std::endl;
         }
         std::cout << std::endl << "Finished Processes:" << std::endl;
@@ -241,7 +241,7 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
                       << "   " 
                       << "Finished"
                       << "   " 
-                      << process->getLineNumber() - 1 << " / " << process->getInstructionSize() 
+                      << process->getLineNumber() << " / " << process->getInstructionSize() 
                       << std::endl;
         }
         std::cout << "----------------------------------------------" << std::endl << std::endl;
