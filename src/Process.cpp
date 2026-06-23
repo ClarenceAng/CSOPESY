@@ -1,9 +1,10 @@
 #include "Process.h"
 
-Process::Process(uint64_t processId, std::string name, uint8_t coreNumber) {
+Process::Process(uint64_t processId, std::string name, uint8_t coreNumber, std::string timestamp) {
     this->processId = processId;
     this->name = name;
     this->coreNumber = coreNumber;
+    this->timestamp = timestamp;
 
     instructions = std::make_unique<InstructionQueue>();
     symbolTable = std::make_unique<SymbolTable>();
@@ -52,12 +53,8 @@ uint64_t Process::getLineNumber() {
     return lineNumber;
 }
 
-void Process::setStartingTimestamp() {
-    startingTimestamp = getTimestamp();
-}
-
-std::string Process::getStartingTimestamp() {
-    return startingTimestamp;
+std::string Process::getProcessTimestamp() {
+    return timestamp;
 }
 
 void Process::generateInstructions() {

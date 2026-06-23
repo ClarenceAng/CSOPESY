@@ -43,6 +43,7 @@ MainConsole::MainConsole() {
             }
 
             std::thread(&Scheduler::generateMultipleProcesses, Scheduler::getInstance()).detach();
+            std::cout << "Process generator starting." << std::endl;
         }},
 
         { "scheduler-stop", [this](const auto& args) { 
@@ -52,6 +53,7 @@ MainConsole::MainConsole() {
             }
             
             Scheduler::getInstance()->stopGenerator();
+            std::cout << "Process generator stopped." << std::endl;
         }},
 
         { "report-util", [this](const auto& args) { 

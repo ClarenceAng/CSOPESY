@@ -28,6 +28,7 @@ class Scheduler {
         bool isReadyQueueEmpty(uint8_t coreNumber);
         std::shared_ptr<Process> getProcess(uint8_t coreNumber);
         void dequeueProcess(uint8_t coreNumber);
+        void rotateProcess(uint8_t coreNumber);
         void setCpuUsage(uint8_t coreNumber, bool isUsing);
 
         uint64_t processCounter = 1;

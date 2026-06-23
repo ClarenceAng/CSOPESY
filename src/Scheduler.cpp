@@ -57,21 +57,26 @@ void Scheduler::generateSingleProcess(std::string processName) {
 
 void Scheduler::generateMultipleProcesses() {
     generatorRunning = true;
+    uint64_t ticks = 1;
 
     while (generatorRunning) {
-        auto [coreNumber, processNumber] = getProcessValues();
-        uint64_t processNameNo = processNumber;
+        if (ticks != config.batchProcessFreq) {
+            ticks++;
+        } else {
+            auto [coreNumber, processNumber] = getProcessValues();
+            uint64_t processNameNo = processNumber;
 
-        // handle duplicate process names
-        std::string processName = "process" + std::to_string(processNameNo);
-        while (!ConsoleManager::getInstance()->registerScreen(processName, false)) {
-            processNameNo++;
-            processName = "process" + std::to_string(processNameNo);
-        }
+            // handle duplicate process names
+            std::string processName = "process" + std::to_string(processNameNo);
+            while (!ConsoleManager::getInstance()->registerScreen(processName, false)) {
+                processNameNo++;
+                processName = "process" + std::to_string(processNameNo);
+            }
 
-        std::thread(&Scheduler::generateProcess, this, processNumber, processName, coreNumber).detach();
-        // uncomment this line for the scheduler to be more reasonable
-        // std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            std::thread(&Scheduler::generateProcess, this, processNumber, processName, coreNumber).detach();
+
+            ticks = 1;
+        } 
     }
 }
 
@@ -80,7 +85,7 @@ void Scheduler::stopGenerator() {
 }
 
 void Scheduler::generateProcess(uint64_t processId, std::string processName, uint8_t coreNumber) { 
-    std::shared_ptr<Process> process = std::make_shared<Process>(processId, processName, coreNumber);
+    std::shared_ptr<Process> process = std::make_shared<Process>(processId, processName, coreNumber, getTimestamp());
 
     ConsoleManager::getInstance()->setScreenProcess(process);
 
@@ -98,7 +103,6 @@ void Scheduler::runFCFSScheduler(uint8_t coreNumber) {
             setCpuUsage(coreNumber, true);
             ticks = 0;
             
-            process->setStartingTimestamp();
             while (!process->isFinished() && running) {
                 if (ticks == config.delaysPerExec) {
                     process->executeInstruction();
@@ -117,7 +121,39 @@ void Scheduler::runFCFSScheduler(uint8_t coreNumber) {
 }
 
 void Scheduler::runRRScheduler(uint8_t coreNumber) {
+    uint64_t ticks;
 
+    while(running) {
+        if (!isReadyQueueEmpty(coreNumber)) {
+            // gets process pointer
+            auto process = getProcess(coreNumber);
+            setCpuUsage(coreNumber, true);
+            ticks = 0;
+
+            // for loop for quantum cycles
+            for (int i = 0; i < config.quantumCycles && running; i++) {
+                // delay before executing
+                while (ticks != config.delaysPerExec && running) {
+                    ticks++;
+                }
+            
+                process->executeInstruction();
+                ticks = 0;
+
+                if (process->isFinished()) {
+                    break;
+                }
+            }
+            
+            if (!process->isFinished()) {
+                rotateProcess(coreNumber);
+            } else {
+                dequeueProcess(coreNumber);
+                setCpuUsage(coreNumber, false);
+            }
+        }
+        // wait for processes if there is none
+    }
 }
 
 std::tuple<uint8_t, uint64_t> Scheduler::getProcessValues() {
@@ -145,6 +181,12 @@ std::shared_ptr<Process> Scheduler::getProcess(uint8_t coreNumber) {
 void Scheduler::dequeueProcess(uint8_t coreNumber) {
     std::unique_lock lock(process_mutex);
     finishedProcesses.push_back(cpuReadyQueues[coreNumber].front());
+    cpuReadyQueues[coreNumber].pop();
+}
+
+void Scheduler::rotateProcess(uint8_t coreNumber) {
+    std::unique_lock lock(process_mutex);
+    cpuReadyQueues[coreNumber].push(cpuReadyQueues[coreNumber].front());
     cpuReadyQueues[coreNumber].pop();
 }
 
@@ -181,19 +223,19 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
             if (isReadyQueueEmpty(i)) continue;
             std::shared_ptr<Process> process = getProcess(i);
             std::cout << process->getProcessName() 
-                      << "   " 
-                      << "(" << process->getStartingTimestamp() << ")"
-                      << "   " 
+                      << "\t"
+                      << "(" << process->getProcessTimestamp() << ")"
+                      << "   "
                       << "Core: " << i 
-                      << "   " 
+                      << "   "
                       << process->getLineNumber() - 1 << " / " << process->getInstructionSize() 
                       << std::endl;
         }
         std::cout << std::endl << "Finished Processes:" << std::endl;
         for (const auto& process : finishedProcesses) {
             std::cout << process->getProcessName() 
-                      << "   " 
-                      << "(" << process->getStartingTimestamp() << ")"
+                      << "\t"
+                      << "(" << process->getProcessTimestamp() << ")"
                       << "   " 
                       << "Finished"
                       << "   " 

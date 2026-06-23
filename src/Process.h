@@ -7,7 +7,7 @@ using InstructionQueue = std::queue<std::unique_ptr<Instruction>>;
 
 class Process {
     public:
-        Process(uint64_t processId, std::string name, uint8_t coreNumber);
+        Process(uint64_t processId, std::string name, uint8_t coreNumber, std::string timestamp);
         ~Process() = default;
 
         void executeInstruction();
@@ -19,8 +19,7 @@ class Process {
         uint64_t getInstructionSize();
         uint64_t getLineNumber();
 
-        void setStartingTimestamp();
-        std::string getStartingTimestamp();
+        std::string getProcessTimestamp();
 
     private:
         void generateInstructions();
@@ -38,7 +37,7 @@ class Process {
         std::string name;
         uint8_t coreNumber;
         uint64_t instructionSize;
-        std::string startingTimestamp;
+        std::string timestamp;
 
         std::atomic<uint64_t> lineNumber = 1;
         uint8_t sleepCounter;
