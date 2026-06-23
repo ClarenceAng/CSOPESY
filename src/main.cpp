@@ -4,7 +4,7 @@
 
 bool initialize() {
     // Look for config.txt relative to wherever the program is launched from.
-    const std::vector<std::string> configPaths = { "config.txt" };
+    const std::vector<std::string> configPaths = { "src/config.txt" };
 
     std::ifstream file;
     for (const auto& path : configPaths) {

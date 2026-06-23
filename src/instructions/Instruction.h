@@ -10,4 +10,5 @@ class Instruction {
         virtual bool isLooping() {
             return 0;
         }
+        virtual uint64_t getExecutionCount() const { return 1; }
 };
