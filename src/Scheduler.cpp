@@ -245,5 +245,46 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
                       << std::endl;
         }
         std::cout << "----------------------------------------------" << std::endl << std::endl;
+    } else {
+        std::ofstream report;
+
+        report.open("csopesy-log.txt");
+
+        if (!report.is_open()) {
+            std::cerr << "Error: File cannot be opened." << std::endl;
+            return;
+        }
+
+        if (report) {
+            report << "CPU Utilization: " << cpuUtil << "%" << std::endl;
+            report << "Cores Used: " << static_cast<int>(coresUsed) << std::endl;
+            report << "Cores Available: " << static_cast<int>(coresAvailable )<< std::endl;
+            report << std::endl << "----------------------------------------------" << std::endl;
+            report << "Running Processes:" << std::endl;
+            for (int i = 0; i < config.numCpu; i++) {
+                if (isReadyQueueEmpty(i)) continue;
+                std::shared_ptr<Process> process = getProcess(i);
+                report << process->getProcessName() 
+                        << "\t"
+                        << "(" << process->getProcessTimestamp() << ")"
+                        << "   "
+                        << "Core: " << i 
+                        << "   "
+                        << process->getLineNumber() - 1 << " / " << process->getInstructionSize() 
+                        << std::endl;
+            }
+            report << std::endl << "Finished Processes:" << std::endl;
+            for (const auto& process : finishedProcesses) {
+                report << process->getProcessName() 
+                        << "\t"
+                        << "(" << process->getProcessTimestamp() << ")"
+                        << "   " 
+                        << "Finished"
+                        << "   " 
+                        << process->getLineNumber() - 1 << " / " << process->getInstructionSize() 
+                        << std::endl;
+            }
+            report << "----------------------------------------------" << std::endl << std::endl;
+        }
     }
 }

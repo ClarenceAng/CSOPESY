@@ -63,6 +63,7 @@ MainConsole::MainConsole() {
             }
             
             Scheduler::getInstance()->getCpuUtilization(true);
+            std::cout << "Report log generated successfully." << std::endl;
         }},
 
         { "clear", [this](const auto& args) { 
