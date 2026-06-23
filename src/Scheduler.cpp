@@ -46,9 +46,11 @@ void Scheduler::stop() {
 }
 
 void Scheduler::generateSingleProcess(std::string processName) {
-    if (!ConsoleManager::getInstance()->registerScreen(processName, true)) {
+    if (!ConsoleManager::getInstance()->registerScreen(processName)) {
         return;
     }
+
+    ConsoleManager::getInstance()->switchConsole(processName);
     
     auto [coreNumber, processNumber] = getProcessValues();
 
@@ -68,7 +70,7 @@ void Scheduler::generateMultipleProcesses() {
 
             // handle duplicate process names
             std::string processName = "process" + std::to_string(processNameNo);
-            while (!ConsoleManager::getInstance()->registerScreen(processName, false)) {
+            while (!ConsoleManager::getInstance()->registerScreen(processName)) {
                 processNameNo++;
                 processName = "process" + std::to_string(processNameNo);
             }

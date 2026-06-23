@@ -27,6 +27,14 @@ void Screen::setProcess(std::shared_ptr<Process> process) {
     this->process = process;
 }
 
+bool Screen::isProcessFinished() {
+    if (process == nullptr) {
+        return false;
+    }
+
+    return process->isFinished();
+}
+
 void Screen::executeCommand(const std::string& cmd) {
     std::cout << std::endl;
 

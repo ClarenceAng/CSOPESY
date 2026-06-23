@@ -10,6 +10,7 @@ class Console {
         virtual void run() = 0;
         virtual void setRunning(bool running) = 0;
         virtual void setProcess(std::shared_ptr<Process> process) {}
+        virtual bool isProcessFinished() { return false; }
     private:
         virtual void executeCommand(const std::string& cmd) = 0;
 };

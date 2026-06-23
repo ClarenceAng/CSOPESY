@@ -12,6 +12,7 @@ class Screen : public Console {
         void run() override;
         void setRunning(bool running) override;
         void setProcess(std::shared_ptr<Process> process) override;
+        bool isProcessFinished() override;
 
     private:
         void executeCommand(const std::string& cmd) override;

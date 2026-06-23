@@ -44,18 +44,14 @@ bool ConsoleManager::isRunning() {
     return running;
 }
 
-bool ConsoleManager::registerScreen(std::string consoleName, bool isSwitch) {
+bool ConsoleManager::registerScreen(std::string consoleName) {
     std::lock_guard<std::mutex> lock(screen_mutex);
     if (consoleTable.contains(consoleName)) {
-        std::cerr << "Error: Screen " << consoleName << " already exists." << std::endl;
+        std::cerr << "Error: Screen \"" << consoleName << "\" already exists." << std::endl;
         return false;
     }
 
     consoleTable[consoleName] = std::make_shared<Screen>(consoleName);
-
-    if (isSwitch) {
-        switchConsole(consoleName);
-    }
 
     return true;
 }
@@ -63,7 +59,12 @@ bool ConsoleManager::registerScreen(std::string consoleName, bool isSwitch) {
 void ConsoleManager::switchConsole(std::string consoleName) {
     std::lock_guard<std::mutex> lock(screen_mutex);
     if (!consoleTable.contains(consoleName)) {
-        std::cerr << "Error: Screen " << consoleName << " not registered." << std::endl;
+        std::cerr << "Error: Screen \"" << consoleName << "\" not registered." << std::endl;
+        return;
+    }
+
+    if (consoleName != MAIN_CONSOLE && consoleTable[consoleName]->isProcessFinished()) {
+        std::cerr << "Error: Screen \"" << consoleName << "\" has finished its process." << std::endl;
         return;
     }
 
