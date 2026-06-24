@@ -1,5 +1,4 @@
 #include "IAdd.h"
-
 IAdd::IAdd(uint16_t& var, uint16_t& val1, uint16_t& val2)
     : var(var), pVal1(&val1), pVal2(&val2) {}
 

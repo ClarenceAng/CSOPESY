@@ -103,7 +103,9 @@ std::unique_ptr<Instruction> Process::makeRandomSimpleInstruction() {
 
     auto useLit = [&]{ return std::uniform_int_distribution<int>(0, 1)(rng) == 0; };
     switch (std::uniform_int_distribution<int>(0, 4)(rng)) {
-        case 0: return cmdPrint("Hello world from " + name + "!");
+        case 0: return useLit()
+                    ? cmdPrint("Hello world from " + name + "!")
+                    : cmdPrint(std::string(randVar()));
         case 1: return cmdDeclare(randVar(), randVal());
         case 2: return useLit() ? cmdAdd(randVar(), randVal(), randVal())
                                 : cmdAdd(randVar(), randVar(), randVar());
