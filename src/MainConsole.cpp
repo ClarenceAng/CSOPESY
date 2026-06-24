@@ -42,13 +42,23 @@ MainConsole::MainConsole() {
                 return;
             }
 
-            std::thread(&Scheduler::generateMultipleProcesses, Scheduler::getInstance()).detach();
+            if (Scheduler::getInstance()->isGeneratorRunning()) {
+                std::cerr << "Error: Process generator is already running." << std::endl;
+                return;
+            }
+
+            Scheduler::getInstance()->startGenerator();
             std::cout << "Process generator starting." << std::endl;
         }},
 
         { "scheduler-stop", [this](const auto& args) { 
             if (!args.empty()) {
                 std::cerr << "Error: scheduler-stop takes no arguments." << std::endl;
+                return;
+            }
+
+            if (!Scheduler::getInstance()->isGeneratorRunning()) {
+                std::cerr << "Error: Process generator is not currently running." << std::endl;
                 return;
             }
             

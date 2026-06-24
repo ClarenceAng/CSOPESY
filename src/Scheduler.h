@@ -12,14 +12,16 @@ class Scheduler {
     
         void stop();
         void generateSingleProcess(std::string processName);
-        void generateMultipleProcesses();
+        void startGenerator();
         void stopGenerator();
+        bool isGeneratorRunning();
         void getCpuUtilization(bool isFileOutput);
         
-    private:
+        private:
         Scheduler();
         ~Scheduler() = default;
         
+        void generateMultipleProcesses();
         void generateProcess(uint64_t processId, std::string processName, uint8_t coreNumber);
         void runFCFSScheduler(uint8_t coreNumber);
         void runRRScheduler(uint8_t coreNumber);
@@ -41,6 +43,7 @@ class Scheduler {
         std::vector<std::queue<std::shared_ptr<Process>>> cpuReadyQueues;
         std::vector<std::thread> cpuThreads;
         std::vector<std::shared_ptr<Process>> finishedProcesses;
+        std::thread generatorThread;
 
         std::mutex counter_mutex;
         std::shared_mutex process_mutex;

@@ -35,7 +35,7 @@ void Scheduler::destroy() {
 }
 
 void Scheduler::stop() {
-    generatorRunning = false;
+    stopGenerator();
     running = false;
 
     for (auto& t : cpuThreads) {
@@ -58,7 +58,6 @@ void Scheduler::generateSingleProcess(std::string processName) {
 }
 
 void Scheduler::generateMultipleProcesses() {
-    generatorRunning = true;
     uint64_t ticks = 1;
 
     while (generatorRunning) {
@@ -82,8 +81,20 @@ void Scheduler::generateMultipleProcesses() {
     }
 }
 
+void Scheduler::startGenerator() {
+    generatorRunning = true;
+    generatorThread = std::thread(&Scheduler::generateMultipleProcesses, this);
+}
+
 void Scheduler::stopGenerator() {
     generatorRunning = false;
+    if (generatorThread.joinable()) {
+        generatorThread.join();
+    }
+}
+
+bool Scheduler::isGeneratorRunning() {
+    return generatorRunning;
 }
 
 void Scheduler::generateProcess(uint64_t processId, std::string processName, uint8_t coreNumber) { 
