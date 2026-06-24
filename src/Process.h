@@ -51,5 +51,5 @@ class Process {
         std::unique_ptr<SymbolTable> symbolTable;
         std::unique_ptr<Logger> logger;
 
-        std::shared_mutex mtx;
+        std::mutex mtx;
 };

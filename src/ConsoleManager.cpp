@@ -81,7 +81,14 @@ void ConsoleManager::switchConsole(std::string consoleName) {
 
 void ConsoleManager::setScreenProcess(std::shared_ptr<Process> process) {
     std::lock_guard<std::mutex> lock(screen_mutex);
-    consoleTable[process->getProcessName()]->setProcess(process);
+    
+    auto it = consoleTable.find(process->getProcessName());
+    if (it != consoleTable.end()) {
+        it->second->setProcess(process);
+    } else {
+        std::cerr << "Error: Screen not found for process "
+                  << process->getProcessName() << std::endl;
+    }
 }
 
 void ConsoleManager::terminate() {

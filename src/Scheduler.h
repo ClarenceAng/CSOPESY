@@ -46,6 +46,6 @@ class Scheduler {
         std::thread generatorThread;
 
         std::mutex counter_mutex;
-        std::shared_mutex process_mutex;
-        std::shared_mutex usage_mutex;
+        std::mutex process_mutex;
+        std::mutex usage_mutex;
 };

@@ -102,7 +102,7 @@ void Scheduler::generateProcess(uint64_t processId, std::string processName, uin
 
     ConsoleManager::getInstance()->setScreenProcess(process);
 
-    std::unique_lock lock(process_mutex);
+    std::lock_guard<std::mutex> lock(process_mutex);
     cpuReadyQueues[coreNumber].push(process);
 }
 
@@ -182,35 +182,35 @@ std::tuple<uint8_t, uint64_t> Scheduler::getProcessValues() {
 }
 
 bool Scheduler::isReadyQueueEmpty(uint8_t coreNumber) {
-    std::shared_lock lock(process_mutex);
+    std::lock_guard<std::mutex> lock(process_mutex);
     return cpuReadyQueues[coreNumber].empty();
 }
 
 std::shared_ptr<Process> Scheduler::getProcess(uint8_t coreNumber) {
-    std::shared_lock lock(process_mutex);
+    std::lock_guard<std::mutex> lock(process_mutex);
     return cpuReadyQueues[coreNumber].front();
 }
 
 void Scheduler::dequeueProcess(uint8_t coreNumber) {
-    std::unique_lock lock(process_mutex);
+    std::lock_guard<std::mutex> lock(process_mutex);
     finishedProcesses.push_back(cpuReadyQueues[coreNumber].front());
     cpuReadyQueues[coreNumber].pop();
 }
 
 void Scheduler::rotateProcess(uint8_t coreNumber) {
-    std::unique_lock lock(process_mutex);
+    std::lock_guard<std::mutex> lock(process_mutex);
     cpuReadyQueues[coreNumber].push(cpuReadyQueues[coreNumber].front());
     cpuReadyQueues[coreNumber].pop();
 }
 
 void Scheduler::setCpuUsage(uint8_t coreNumber, bool isUsing) {
-    std::unique_lock lock(usage_mutex);
+    std::lock_guard<std::mutex> lock(usage_mutex);
     cpuUsage[coreNumber] = isUsing;
 }
 
 void Scheduler::getCpuUtilization(bool isFileOutput) {
-    std::shared_lock pLock(process_mutex);
-    std::shared_lock uLock(usage_mutex);
+    std::lock_guard<std::mutex> pLock(process_mutex);
+    std::lock_guard<std::mutex> uLock(usage_mutex);
     
     int cpuUtil;
     uint8_t coresUsed = 0;
@@ -239,7 +239,7 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
                       << "   "
                       << "(" << process->getProcessTimestamp() << ")"
                       << "   "
-                      << "Core: " << i
+                      << "Core: " << std::format("{:<3d}", i)
                       << "   "
                       << process->getLineNumber() << " / " << process->getInstructionSize()
                       << std::endl;
@@ -279,7 +279,7 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
                         << "   "
                         << "(" << process->getProcessTimestamp() << ")"
                         << "   "
-                        << "Core: " << i
+                        << "Core: " << std::format("{:<3d}", i)
                         << "   "
                         << process->getLineNumber() << " / " << process->getInstructionSize() 
                         << std::endl;

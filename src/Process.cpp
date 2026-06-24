@@ -16,7 +16,7 @@ Process::Process(uint64_t processId, std::string name, uint8_t coreNumber, std::
 }
 
 void Process::executeInstruction() {
-    std::unique_lock lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx);
     instructions->front()->execute();
 
     // checks whether instruction is FOR or SLEEP and is still running before removing the instruction
@@ -27,7 +27,7 @@ void Process::executeInstruction() {
 }
 
 void Process::displayLog() {
-    std::shared_lock lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx);
     std::cout << "Logs:" << std::endl;
     for (const auto& log : *logger) {
         std::cout << "(" << std::get<0>(log) << ") Core:" << static_cast<int>(coreNumber) << " \"" << std::get<1>(log) << "\"" << std::endl;
@@ -35,7 +35,7 @@ void Process::displayLog() {
 }
 
 bool Process::isFinished() {
-    std::shared_lock lock(mtx);
+    std::lock_guard<std::mutex> lock(mtx);
     return instructions->empty();
 }
 
