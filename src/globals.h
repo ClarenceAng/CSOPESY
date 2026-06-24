@@ -58,7 +58,7 @@ inline void headerDisplay() {
               << "Go, Kenneth D.                                " << std::endl
               << "Trocino, Job D.                               " << std::endl
               << "                                              " << std::endl
-              << "Last updated: 06-23-2026                      " << std::endl
+              << "Last updated: 06-24-2026                      " << std::endl
               << "----------------------------------------------" << std::endl
               ;
 }
@@ -80,4 +80,15 @@ inline std::string getTimestamp() {
     oss << std::put_time(&tm, "%m/%d/%Y %I:%M:%S%p");
 
     return oss.str();
+}
+
+inline std::string truncateString(std::string text) {
+    int strLen = text.length();
+
+    if (strLen > 25) {
+        text.erase(22);
+        text += "...";
+    }
+
+    return text;
 }

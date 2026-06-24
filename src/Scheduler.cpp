@@ -235,8 +235,8 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
         for (int i = 0; i < config.numCpu; i++) {
             if (cpuReadyQueues[i].empty()) continue;
             const auto& process = cpuReadyQueues[i].front();
-            std::cout << process->getProcessName()
-                      << "\t"
+            std::cout << std::format("{:<25s}", truncateString(process->getProcessName()))
+                      << "   "
                       << "(" << process->getProcessTimestamp() << ")"
                       << "   "
                       << "Core: " << i
@@ -246,8 +246,8 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
         }
         std::cout << std::endl << "Finished Processes:" << std::endl;
         for (const auto& process : finishedProcesses) {
-            std::cout << process->getProcessName() 
-                      << "\t"
+            std::cout << std::format("{:<25s}", truncateString(process->getProcessName()))
+                      << "   "
                       << "(" << process->getProcessTimestamp() << ")"
                       << "   " 
                       << "Finished"
@@ -275,8 +275,8 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
             for (int i = 0; i < config.numCpu; i++) {
                 if (cpuReadyQueues[i].empty()) continue;
                 const auto& process = cpuReadyQueues[i].front();
-                report << process->getProcessName() 
-                        << "\t"
+                report << std::format("{:<25s}", truncateString(process->getProcessName()))
+                        << "   "
                         << "(" << process->getProcessTimestamp() << ")"
                         << "   "
                         << "Core: " << i
@@ -286,8 +286,8 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
             }
             report << std::endl << "Finished Processes:" << std::endl;
             for (const auto& process : finishedProcesses) {
-                report << process->getProcessName() 
-                        << "\t"
+                report << std::format("{:<25s}", truncateString(process->getProcessName()))
+                        << "   "
                         << "(" << process->getProcessTimestamp() << ")"
                         << "   " 
                         << "Finished"
