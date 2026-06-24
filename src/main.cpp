@@ -28,11 +28,11 @@ bool initialize() {
                 if (value == "\"fcfs\"") config.schedulerType = FCFS;
                 if (value == "\"rr\"") config.schedulerType = RR;
             }
-            if (key == "quantum-cycles") config.quantumCycles = std::stoi(value);
-            if (key == "batch-process-freq") config.batchProcessFreq = std::stoi(value);
-            if (key == "min-ins") config.minIns = std::stoi(value);
-            if (key == "max-ins") config.maxIns = std::stoi(value);
-            if (key == "delays-per-exec") config.delaysPerExec = std::stoi(value);
+            if (key == "quantum-cycles") config.quantumCycles = std::stoll(value);
+            if (key == "batch-process-freq") config.batchProcessFreq = std::stoll(value);
+            if (key == "min-ins") config.minIns = std::stoll(value);
+            if (key == "max-ins") config.maxIns = std::stoll(value);
+            if (key == "delays-per-exec") config.delaysPerExec = std::stoll(value);
         }
     }
 
@@ -77,10 +77,10 @@ int main() {
 
     while (ConsoleManager::getInstance()->isRunning()) {}
 
-    ConsoleManager::getInstance()->stop();
     Scheduler::getInstance()->stop();
-    ConsoleManager::destroy();
     Scheduler::destroy();
+    ConsoleManager::getInstance()->stop();
+    ConsoleManager::destroy();
 
     std::cout << "Program stopped successfully.\n";
 

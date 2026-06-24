@@ -38,6 +38,11 @@ bool Screen::isProcessFinished() {
 void Screen::executeCommand(const std::string& cmd) {
     std::cout << std::endl;
 
+    if (cmd == "exit") {
+        ConsoleManager::getInstance()->switchConsole(MAIN_CONSOLE);
+        return;
+    }
+
     if (process == nullptr) {
         std::cout << "Process is still being generated." << std::endl;
     } else {
@@ -54,8 +59,6 @@ void Screen::executeCommand(const std::string& cmd) {
             } else {
                 std::cout << "Finished!" << std::endl;
             }
-        } else if (cmd == "exit") {
-            ConsoleManager::getInstance()->switchConsole(MAIN_CONSOLE);
         } else {
             std::cout << "Unknown command." << std::endl;
         }
