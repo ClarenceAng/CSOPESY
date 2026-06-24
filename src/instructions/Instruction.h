@@ -2,6 +2,16 @@
 
 #include "globals.h"
 
+struct Operand {
+    bool isLiteral;
+    uint16_t value;
+    uint16_t* reference;
+
+    uint16_t get() const {
+        return isLiteral ? value : *reference;
+    }
+};
+
 class Instruction {
     public:
         ~Instruction() = default;

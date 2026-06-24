@@ -12,7 +12,10 @@ Process::Process(uint64_t processId, std::string name, uint8_t coreNumber, std::
     symbolTable = std::make_unique<SymbolTable>();
     logger = std::make_unique<Logger>();
 
-    generateInstructions();
+    // generateInstructions();
+
+    // use for custom instruction test case
+    generateCustomInstructions(); 
 }
 
 void Process::executeInstruction() {
@@ -59,61 +62,80 @@ std::string Process::getProcessTimestamp() {
     return timestamp;
 }
 
-void Process::generateInstructions() {
-    std::mt19937 rng(std::random_device{}());
-    uint64_t n = std::uniform_int_distribution<uint64_t>(config.minIns, config.maxIns)(rng);
-    instructionSize = n;
+// void Process::generateInstructions() {
+//     std::mt19937 rng(std::random_device{}());
+//     uint64_t n = std::uniform_int_distribution<uint64_t>(config.minIns, config.maxIns)(rng);
+//     instructionSize = n;
 
-    ForLoop temp;
-    generateInstructionList(temp, n, 0);
-    for (auto& instr : temp)
-        instructions->push(std::move(instr));
-}
+//     ForLoop temp;
+//     generateInstructionList(temp, n, 0);
+//     for (auto& instr : temp)
+//         instructions->push(std::move(instr));
+// }
 
-void Process::generateInstructionList(ForLoop& container, uint64_t& budget, int depth) {
-    thread_local std::mt19937 rng(std::random_device{}());
-    while (budget > 0) {
-        bool makeFor = depth < 3 && budget >= 2 &&
-                       std::uniform_int_distribution<int>(0, 99)(rng) < 30;
-        if (makeFor) {
-            uint64_t maxRep = std::min<uint64_t>(4, budget);
-            uint64_t repeats = std::uniform_int_distribution<uint64_t>(2, maxRep)(rng);
-            uint64_t bodyBudget = budget / repeats;
-            uint64_t savedBodyBudget = bodyBudget;
-            auto body = makeForLoop();
-            generateInstructionList(*body, bodyBudget, depth + 1);
-            budget -= savedBodyBudget * repeats;
-            container.push_back(cmdFor(std::move(body), static_cast<uint16_t>(repeats)));
-        } else {
-            container.push_back(makeRandomSimpleInstruction());
-            budget--;
-        }
-    }
-}
+// void Process::generateInstructionList(ForLoop& container, uint64_t& budget, int depth) {
+//     thread_local std::mt19937 rng(std::random_device{}());
+//     while (budget > 0) {
+//         bool makeFor = depth < 3 && budget >= 2 &&
+//                        std::uniform_int_distribution<int>(0, 99)(rng) < 30;
+//         if (makeFor) {
+//             uint64_t maxRep = std::min<uint64_t>(4, budget);
+//             uint64_t repeats = std::uniform_int_distribution<uint64_t>(2, maxRep)(rng);
+//             uint64_t bodyBudget = budget / repeats;
+//             uint64_t savedBodyBudget = bodyBudget;
+//             auto body = makeForLoop();
+//             generateInstructionList(*body, bodyBudget, depth + 1);
+//             budget -= savedBodyBudget * repeats;
+//             container.push_back(cmdFor(std::move(body), static_cast<uint16_t>(repeats)));
+//         } else {
+//             container.push_back(makeRandomSimpleInstruction());
+//             budget--;
+//         }
+//     }
+// }
 
-std::unique_ptr<Instruction> Process::makeRandomSimpleInstruction() {
-    static const std::vector<std::string> vars = {"v0", "v1", "v2", "v3", "v4"};
-    thread_local std::mt19937 rng(std::random_device{}());
-    auto randVar = [&]() -> const std::string& {
-        return vars[std::uniform_int_distribution<int>(0, 4)(rng)];
-    };
-    auto randVal = [&]() -> uint16_t {
-        return static_cast<uint16_t>(std::uniform_int_distribution<int>(0, 255)(rng));
-    };
+// std::unique_ptr<Instruction> Process::makeRandomSimpleInstruction() {
+//     static const std::vector<std::string> vars = {"v0", "v1", "v2", "v3", "v4"};
+//     thread_local std::mt19937 rng(std::random_device{}());
+//     auto randVar = [&]() -> const std::string& {
+//         return vars[std::uniform_int_distribution<int>(0, 4)(rng)];
+//     };
+//     auto randVal = [&]() -> uint16_t {
+//         return static_cast<uint16_t>(std::uniform_int_distribution<int>(0, 255)(rng));
+//     };
 
-    auto useLit = [&]{ return std::uniform_int_distribution<int>(0, 1)(rng) == 0; };
-    switch (std::uniform_int_distribution<int>(0, 4)(rng)) {
-        case 0: return useLit()
-                    ? cmdPrint("Hello world from " + name + "!")
-                    : cmdPrint(std::string(randVar()));
-        case 1: return cmdDeclare(randVar(), randVal());
-        case 2: return useLit() ? cmdAdd(randVar(), randVal(), randVal())
-                                : cmdAdd(randVar(), randVar(), randVar());
-        case 3: return useLit() ? cmdSubtract(randVar(), randVal(), randVal())
-                                : cmdSubtract(randVar(), randVar(), randVar());
-        case 4: return cmdSleep(static_cast<uint8_t>(std::uniform_int_distribution<int>(1, 10)(rng)));
-        default: return cmdPrint("Hello world from " + name + "!");
-    }
+//     auto useLit = [&]{ return std::uniform_int_distribution<int>(0, 1)(rng) == 0; };
+//     switch (std::uniform_int_distribution<int>(0, 4)(rng)) {
+//         case 0: return useLit()
+//                     ? cmdPrint("Hello world from " + name + "!")
+//                     : cmdPrint(std::string(randVar()));
+//         case 1: return cmdDeclare(randVar(), randVal());
+//         case 2: return useLit() ? cmdAdd(randVar(), randVal(), randVal())
+//                                 : cmdAdd(randVar(), randVar(), randVar());
+//         case 3: return useLit() ? cmdSubtract(randVar(), randVal(), randVal())
+//                                 : cmdSubtract(randVar(), randVar(), randVar());
+//         case 4: return cmdSleep(static_cast<uint8_t>(std::uniform_int_distribution<int>(1, 10)(rng)));
+//         default: return cmdPrint("Hello world from " + name + "!");
+//     }
+// }
+
+void Process::generateCustomInstructions() {
+    instructionSize = 1000;
+
+    symbolTable->emplace("x", 0);
+    symbolTable->emplace("y", 0);
+    symbolTable->emplace("z", 0);
+
+    auto forLoop = makeForLoop();
+
+    forLoop->push_back(cmdAdd("x", operandBuilder("x"), operandBuilder(1)));
+    forLoop->push_back(cmdPrint("x"));
+    forLoop->push_back(cmdAdd("y", operandBuilder("y"), operandBuilder(1)));
+    forLoop->push_back(cmdPrint("y"));
+    forLoop->push_back(cmdAdd("z", operandBuilder("z"), operandBuilder(1)));
+    forLoop->push_back(cmdPrint("z"));
+
+    instructions->push(cmdFor(std::move(forLoop), 100));
 }
 
 void Process::makeVariable(std::string var) {
@@ -133,28 +155,14 @@ std::unique_ptr<Instruction> Process::cmdDeclare(std::string var, uint16_t val) 
     return std::make_unique<IDeclare>(symbolTable->at(var), val);
 }
 
-std::unique_ptr<Instruction> Process::cmdAdd(std::string var1, std::string var2, std::string var3) {
-    makeVariable(var1);
-    makeVariable(var2);
-    makeVariable(var3);
-    return std::make_unique<IAdd>(symbolTable->at(var1), symbolTable->at(var2), symbolTable->at(var3));
+std::unique_ptr<Instruction> Process::cmdAdd(std::string var, Operand op1, Operand op2) {
+    makeVariable(var);
+    return std::make_unique<IAdd>(symbolTable->at(var), op1, op2);
 }
 
-std::unique_ptr<Instruction> Process::cmdAdd(std::string var1, uint16_t lit2, uint16_t lit3) {
-    makeVariable(var1);
-    return std::make_unique<IAdd>(symbolTable->at(var1), lit2, lit3);
-}
-
-std::unique_ptr<Instruction> Process::cmdSubtract(std::string var1, std::string var2, std::string var3) {
-    makeVariable(var1);
-    makeVariable(var2);
-    makeVariable(var3);
-    return std::make_unique<ISubtract>(symbolTable->at(var1), symbolTable->at(var2), symbolTable->at(var3));
-}
-
-std::unique_ptr<Instruction> Process::cmdSubtract(std::string var1, uint16_t lit2, uint16_t lit3) {
-    makeVariable(var1);
-    return std::make_unique<ISubtract>(symbolTable->at(var1), lit2, lit3);
+std::unique_ptr<Instruction> Process::cmdSubtract(std::string var, Operand op1, Operand op2) {
+    makeVariable(var);
+    return std::make_unique<ISubtract>(symbolTable->at(var), op1, op2);
 }
 
 std::unique_ptr<Instruction> Process::cmdSleep(uint8_t ticks) {
@@ -167,4 +175,13 @@ std::unique_ptr<Instruction> Process::cmdFor(std::unique_ptr<ForLoop> instructio
 
 std::unique_ptr<ForLoop> Process::makeForLoop() {
     return std::make_unique<ForLoop>();
+}
+
+Operand Process::operandBuilder(std::string var) {
+    makeVariable(var);
+    return {false, 0, &symbolTable->at(var)};
+}
+
+Operand Process::operandBuilder(uint16_t lit) {
+    return {true, lit, nullptr};
 }

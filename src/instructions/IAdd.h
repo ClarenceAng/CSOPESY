@@ -4,12 +4,12 @@
 
 class IAdd : public Instruction {
     public:
-        IAdd(uint16_t& var, uint16_t val1, uint16_t val2);
+        IAdd(uint16_t& var, Operand op1, Operand op2);
 
         void execute() override;
 
     private:
         uint16_t& var;
-        uint16_t val1;
-        uint16_t val2;
-};
+        Operand op1;
+        Operand op2;
+    };

@@ -26,16 +26,19 @@ class Process {
         void generateInstructionList(ForLoop& container, uint64_t& budget, int depth);
         std::unique_ptr<Instruction> makeRandomSimpleInstruction();
 
+        void generateCustomInstructions();
+
         void makeVariable(std::string var);
         std::unique_ptr<Instruction> cmdPrint(std::string msg);
         std::unique_ptr<Instruction> cmdDeclare(std::string var, uint16_t val);
-        std::unique_ptr<Instruction> cmdAdd(std::string var1, std::string var2, std::string var3);
-        std::unique_ptr<Instruction> cmdAdd(std::string var1, uint16_t lit2, uint16_t lit3);
-        std::unique_ptr<Instruction> cmdSubtract(std::string var1, std::string var2, std::string var3);
-        std::unique_ptr<Instruction> cmdSubtract(std::string var1, uint16_t lit2, uint16_t lit3);
+        std::unique_ptr<Instruction> cmdAdd(std::string var, Operand op1, Operand op2);
+        std::unique_ptr<Instruction> cmdSubtract(std::string var, Operand op1, Operand op2);
         std::unique_ptr<Instruction> cmdSleep(uint8_t ticks);
         std::unique_ptr<Instruction> cmdFor(std::unique_ptr<ForLoop> instructions, uint16_t repeats);
         std::unique_ptr<ForLoop> makeForLoop();
+
+        Operand operandBuilder(std::string var);
+        Operand operandBuilder(uint16_t lit);
 
         uint64_t processId;
         std::string name;

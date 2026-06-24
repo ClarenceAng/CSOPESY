@@ -1,8 +1,8 @@
 #include "ISubtract.h"
 
-ISubtract::ISubtract(uint16_t& var, uint16_t val1, uint16_t val2)
-    : var(var), val1(val1), val2(val2) {}
+ISubtract::ISubtract(uint16_t& var, Operand op1, Operand op2)
+    : var(var), op1(op1), op2(op2) {}
 
 void ISubtract::execute() {
-    var = (val2 > val1) ? 0 : static_cast<uint16_t>(val1 - val2);
+    var = (op2.get() > op1.get()) ? 0 : op1.get() - op2.get();
 }
