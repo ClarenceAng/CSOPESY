@@ -2,15 +2,16 @@
 
 ISleep::ISleep(uint8_t ticks) : ticks(ticks) {}
 
-void ISleep::execute() {
+uint64_t ISleep::execute() {
     counter++;
-    if (counter == ticks) {
-        isSleeping = false;
+    if (counter >= ticks) {
+        counter = 0;   // reset so the SLEEP works again on the next loop iteration
+        return 1;      // the SLEEP instruction completes on this tick
     }
-    // std::cout << "Sleeping..." << std::endl;
+    return 0;          // still busy-waiting; no leaf completed
 }
 
 bool ISleep::isLooping() {
-    return isSleeping;
-} 
+    return counter != 0;   // busy-waiting iff started (counter > 0) but not yet completed
+}
 

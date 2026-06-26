@@ -17,11 +17,12 @@ Process::Process(uint64_t processId, std::string name, uint8_t coreNumber, std::
 
 void Process::executeInstruction() {
     std::lock_guard<std::mutex> lock(mtx);
-    instructions->front()->execute();
+    // advance the line counter by the number of leaf instructions completed this tick
+    // (1 for a simple instruction, 0 while a SLEEP busy-waits, and per inner instruction for a FOR loop)
+    lineNumber += instructions->front()->execute();
 
     // checks whether instruction is FOR or SLEEP and is still running before removing the instruction
     if (!instructions->front()->isLooping()) {
-        lineNumber += instructions->front()->getExecutionCount();
         instructions->pop();
     }
 }

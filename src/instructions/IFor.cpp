@@ -6,11 +6,12 @@ IFor::IFor(std::unique_ptr<ForLoop> instructions, uint16_t repeats)
     instructionSize = this->instructions->size();
 }
 
-void IFor::execute() {
+uint64_t IFor::execute() {
     isRunning = true;
+    uint64_t completed = 0;
 
     if (instructionSize > 0) {
-        (*instructions)[forIndex]->execute();
+        completed = (*instructions)[forIndex]->execute();   // one leaf (or 0 if inner SLEEP busy-waits)
 
         if (!(*instructions)[forIndex]->isLooping()) {
             forIndex++;
@@ -26,15 +27,10 @@ void IFor::execute() {
         isRunning = false;
         repeatCount = 0;
     }
+
+    return completed;
 }
 
 bool IFor::isLooping() {
     return isRunning;
-}
-
-uint64_t IFor::getExecutionCount() const {
-    uint64_t bodyCount = 0;
-    for (const auto& instr : *instructions)
-        bodyCount += instr->getExecutionCount();
-    return bodyCount * repeats;
 }

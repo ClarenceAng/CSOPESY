@@ -3,7 +3,7 @@
 IPrint::IPrint(std::string msg, SymbolTable& symbolTable, Logger& logger) 
     : msg(std::move(msg)), symbolTable(symbolTable), logger(logger) {}
 
-void IPrint::execute() {
+uint64_t IPrint::execute() {
     std::string log;
 
     if (symbolTable.contains(msg)) {
@@ -14,4 +14,5 @@ void IPrint::execute() {
     }
 
     logger.emplace_back(getTimestamp(), log);
+    return 1;
 }

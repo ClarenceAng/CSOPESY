@@ -6,7 +6,7 @@ class IDeclare : public Instruction {
     public:
         IDeclare(uint16_t& var, uint16_t val);
 
-        void execute() override;
+        uint64_t execute() override;
     private:
         uint16_t& var;
         uint16_t val;
