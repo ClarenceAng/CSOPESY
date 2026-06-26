@@ -3,9 +3,8 @@
 build
 app.exe
 
-src/app
-src/app.exe
 src/cmake_install.cmake
-src/CMakeCache.txt
 src/Makefile
-src/CMakeFiles
+CMakeCache.txt
+CMakeFiles/
+build/
