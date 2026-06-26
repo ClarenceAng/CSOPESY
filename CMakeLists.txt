@@ -41,3 +41,14 @@ else()
 endif()
 
 target_link_libraries(app PRIVATE Threads::Threads)
+
+# Copy config.txt into the build tree so the binary finds it at src/config.txt
+# relative to the build directory (matches the path hardcoded in main.cpp).
+add_custom_command(
+    TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/src
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/src/config.txt
+        ${CMAKE_BINARY_DIR}/src/config.txt
+    COMMENT "Copying src/config.txt to build directory"
+)
