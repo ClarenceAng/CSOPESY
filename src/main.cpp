@@ -3,8 +3,10 @@
 #include "Scheduler.h"
 
 bool initialize() {
-    // Look for config.txt relative to wherever the program is launched from.
-    const std::vector<std::string> configPaths = { "src/config.txt" };
+    #ifndef CONFIG_PATH
+    #define CONFIG_PATH "src/config.txt"
+    #endif
+    const std::vector<std::string> configPaths = { CONFIG_PATH };
 
     std::ifstream file;
     for (const auto& path : configPaths) {
