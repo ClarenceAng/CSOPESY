@@ -29,3 +29,19 @@
    ```sh
    .\build\app.exe
    ```
+
+## Build and Run (Linux)
+
+### Prerequisites
+- CMake
+
+### Instructions
+1. Open a terminal in the project root.
+2. Build the project:
+   ```sh
+   cmake --build build
+   ```
+3. Run the executable:
+   ```sh
+   ./build/app
+   ```
