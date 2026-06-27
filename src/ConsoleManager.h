@@ -22,7 +22,7 @@ class ConsoleManager {
         void stop();
         bool isRunning();
         
-        bool registerScreen(std::string consoleName);
+        bool registerScreen(std::string consoleName, bool isVerbose);
         void switchConsole(std::string consoleName);
         void setScreenProcess(std::shared_ptr<Process> process);
         void terminate();

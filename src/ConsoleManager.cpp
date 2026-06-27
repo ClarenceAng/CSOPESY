@@ -44,10 +44,12 @@ bool ConsoleManager::isRunning() {
     return running;
 }
 
-bool ConsoleManager::registerScreen(std::string consoleName) {
+bool ConsoleManager::registerScreen(std::string consoleName, bool isVerbose) {
     std::lock_guard<std::mutex> lock(screen_mutex);
     if (consoleTable.contains(consoleName)) {
-        std::cerr << "Error: Screen \"" << consoleName << "\" already exists." << std::endl;
+        if (isVerbose) {
+            std::cerr << "Error: Screen \"" << consoleName << "\" already exists." << std::endl;
+        }
         return false;
     }
 
