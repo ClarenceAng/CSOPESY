@@ -8,7 +8,6 @@ uint64_t IPrint::execute() {
 
     if (symbolTable.contains(msg)) {
         log = "Value from " + msg + " = " + std::to_string(symbolTable[msg]);
-        // std::cout << "Pointer: " << &symbolTable[msg] << std::endl;
     } else {
         log = msg;
     }
