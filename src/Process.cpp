@@ -82,7 +82,7 @@ void Process::generateInstructionList(ForLoop& container, uint64_t& budget, int 
     );
     while (budget > 0) {
         bool makeFor = depth < 3 && budget >= 2 &&
-                       std::uniform_int_distribution<int>(0, 99)(rng) < 30;
+                       std::uniform_int_distribution<int>(0, 99)(rng) < 5;
         if (makeFor) {
             uint64_t maxRep = std::min<uint64_t>(4, budget);
             uint64_t repeats = std::uniform_int_distribution<uint64_t>(2, maxRep)(rng);
