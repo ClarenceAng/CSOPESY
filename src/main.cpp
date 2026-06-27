@@ -34,7 +34,7 @@ bool initialize() {
             if (key == "batch-process-freq") config.batchProcessFreq = std::stoll(value);
             if (key == "min-ins") config.minIns = std::stoll(value);
             if (key == "max-ins") config.maxIns = std::stoll(value);
-            if (key == "delays-per-exec") config.delaysPerExec = std::stoll(value);
+            if (key == "delay-per-exec") config.delaysPerExec = std::stoll(value);
         }
     }
 
