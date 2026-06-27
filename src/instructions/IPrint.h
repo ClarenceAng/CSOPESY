@@ -6,7 +6,7 @@ class IPrint : public Instruction {
     public:
         IPrint(std::string msg, SymbolTable& symbolTable, Logger& logger);
 
-        void execute() override;
+        uint64_t execute() override;
     private:
         std::string msg;
         

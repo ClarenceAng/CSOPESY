@@ -8,9 +8,8 @@ class IFor : public Instruction {
     public:
         IFor(std::unique_ptr<ForLoop> instructions, uint16_t repeats);
 
-        void execute() override;
+        uint64_t execute() override;
         bool isLooping() override;
-        uint64_t getExecutionCount() const override;
 
     private:
         std::unique_ptr<ForLoop> instructions;
