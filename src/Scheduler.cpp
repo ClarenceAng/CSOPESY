@@ -297,5 +297,7 @@ void Scheduler::getCpuUtilization(bool isFileOutput) {
             }
             report << "----------------------------------------------" << std::endl << std::endl;
         }
+
+        report.close();
     }
 }
